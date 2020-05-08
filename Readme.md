@@ -1,6 +1,6 @@
 # AWS ASP.NET Core Web API HospitalService Lambda Function
 
-This project is a Micro Service for project-data-public. Which is a software project in development by Helpful Engineering to match hospital's PPE demands with supply. This Web API gives CRUD functionality for a Hospital Repository in the States.
+This project is a Micro Service for project-data-public. Which is a software project in development by Helpful Engineering to match hospital's PPE demands with supply. This Web API gives CRUD functionality for a Hospital Repository around the Globe.
 
 ### Configuring Hospital Service ###
 
