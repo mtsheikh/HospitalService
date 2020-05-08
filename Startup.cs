@@ -1,8 +1,11 @@
 using System.Data;
 using Dapper.FastCrud;
+using FluentValidation.AspNetCore;
 using HospitalService.Abstractions;
 using HospitalService.Configurations;
+using HospitalService.Filters;
 using HospitalService.Services;
+using HospitalService.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,14 +16,11 @@ using MySql.Data.MySqlClient;
 namespace HospitalService
 {
     public class Startup
-    {
-        public const string AppS3BucketKey = "AppS3Bucket";
+    { 
         public string CurrentDirectory { get; set; }
-        
         public Startup(IConfiguration configuration)
         {
             OrmConfiguration.DefaultDialect = SqlDialect.MySql;
-
             Configuration = configuration;
         }
 
@@ -29,7 +29,6 @@ namespace HospitalService
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-              
             // Register env and config services
             services.AddTransient<IEnvironmentService, EnvironmentService>();
             services.AddTransient<IConfigurationService, ConfigurationService>
@@ -47,12 +46,13 @@ namespace HospitalService
             });
             
             // Register Hospital Repository, if need to hook up a different repository then interface it with IHospitalRepository 
-            services.AddSingleton<IHospitalRepository, HospitalRepository>();
-            
-            services.AddControllers();
+            services.AddSingleton<IHospitalRepository, MockHospitalService>();
 
-            // Add S3 to the ASP.NET Core dependency injection framework.
-            services.AddAWSService<Amazon.S3.IAmazonS3>();
+            // Injecting Validation Filter
+            services.AddScoped<ValidationFilter>();
+            services.AddControllers()
+                .AddFluentValidation(fv => 
+                    fv.RegisterValidatorsFromAssemblyContaining<HospitalValidator>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

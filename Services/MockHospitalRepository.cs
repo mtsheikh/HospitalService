@@ -2,6 +2,7 @@
 using System.Linq;
 using HospitalService.Abstractions;
 using HospitalService.Models;
+using HospitalService.Validators;
 
 namespace HospitalService.Services
 {
@@ -10,7 +11,7 @@ namespace HospitalService.Services
         private List<hospital> _hospitals = new List<hospital>();
         public hospital GetHospital(int hospitalId)
         {
-            return _hospitals.FirstOrDefault<hospital>(h => h.Id == hospitalId);
+            return _hospitals.FirstOrDefault(h => h.Id == hospitalId);
         }
 
         public IEnumerable<hospital> GetHospitals()
@@ -25,7 +26,7 @@ namespace HospitalService.Services
 
         public bool DeleteHospital(int hospitalId)
         {
-            var hospitalToRemove = _hospitals.FirstOrDefault<hospital>(h => h.Id == hospitalId);
+            var hospitalToRemove = _hospitals.FirstOrDefault(h => h.Id == hospitalId);
 
             if (hospitalToRemove == null) return false;
             _hospitals.Remove(hospitalToRemove);
@@ -34,7 +35,7 @@ namespace HospitalService.Services
 
         public bool UpdateHospital(int hospitalId, hospital hospital)
         {
-            var hospitalToUpdate = _hospitals.FirstOrDefault<hospital>(h => h.Id == hospitalId);
+            var hospitalToUpdate = _hospitals.FirstOrDefault(h => h.Id == hospitalId);
             if (hospitalToUpdate == null) return false;
             _hospitals[_hospitals.IndexOf(hospitalToUpdate)] = hospital;
             return true;

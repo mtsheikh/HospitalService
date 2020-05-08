@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using HospitalService.Abstractions;
+using HospitalService.Contracts.V1.Responses;
+using HospitalService.Filters;
 using HospitalService.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HospitalService.Controllers
+namespace HospitalService.Controllers.v1
 {
     /// <summary>
     /// The WebApi that provides CRUD functionality 
@@ -17,10 +19,8 @@ namespace HospitalService.Controllers
         /// Inject your repository here
         /// </summary>
         /// <param name="hospitalRepository"></param>
-        public HospitalController(IHospitalRepository hospitalRepository)
-        {
+        public HospitalController(IHospitalRepository hospitalRepository) => 
             _hospitalRepository = hospitalRepository;
-        }
 
         // GET: api/v1/hospital
         [HttpGet]
@@ -39,6 +39,8 @@ namespace HospitalService.Controllers
         
         // POST: api/v1/hospital
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilter))]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
         public IActionResult Post([FromBody]hospital hospital)
         {
             _hospitalRepository.AddHospital(hospital);
@@ -54,6 +56,8 @@ namespace HospitalService.Controllers
 
         // PUT: api/v1/hospital/1
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilter))]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
         public IActionResult Put(int id, [FromBody]hospital hospitalToUpdate) =>
             _hospitalRepository.UpdateHospital(id, hospitalToUpdate) == false
             ? (IActionResult)NotFound("This hospital doesn't exist")
